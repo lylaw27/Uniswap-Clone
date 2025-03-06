@@ -1,101 +1,67 @@
-import Image from "next/image";
+'use client'
+import {useEffect} from "react";
+import Navigation from "../components/Navigation";
+import useSwapEthereum from "../hooks/useSwapEthereum";
+import AssetInfo from "../components/AssetInfo";
+import SwapVertical from "../components/SwapVertical";
+
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    const {swapStatus,refreshData,blockCount,amountChange,swapBuySell,initiateSwap,connect,getBlockData,tokenBalance,ethBalance,poolTokenBal,poolEthBal,
+        buyAmount,address,sellAmount,sellSelected,setSellSelected,swapState} = useSwapEthereum();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+    useEffect(() => {
+        connect().then(getBlockData);
+    }, [address]);
+
+    useEffect(() => {
+        refreshData();
+    }, [blockCount,swapState]);
+
+
+    return (
+      <div className="container mx-auto tex-2xl">
+        <Navigation connect={connect} address={address}/>
+          <div className="flex">
+              <div className="w-2/3 px-16">
+                  <div className={`p-12 ${sellSelected ? "bg-teal-300" : "bg-teal-100"} rounded-xl m-auto border-black border-2`}>
+                      <div className="text-xl">
+                          Sell
+                      </div>
+                      <div className="flex justify-between text-3xl">
+                          <input className="w-3/4 bg-transparent" type="number" placeholder="0" value={sellAmount} onChange={amountChange} onSelect={()=>setSellSelected(true)}></input>
+                          <div>{swapState ? "ETH" : "LYT"}</div>
+                      </div>
+                  </div>
+                  <div className="flex justify-center">
+                      <div onClick={swapBuySell} className="p-3 bg-teal-100 rounded-xl m-auto border-black border-2 my-5 hover:cursor-pointer">
+                          <SwapVertical/>
+                      </div>
+                  </div>
+                      <div className={`p-12 ${!sellSelected ? "bg-teal-300" : "bg-teal-100"} rounded-xl m-auto border-black border-2`}>
+                          <div className="text-xl">
+                              Buy
+                          </div>
+                          <div className="flex justify-between text-3xl">
+                              <input className="w-3/4 bg-transparent" type="number" placeholder="0" value={buyAmount} onChange={amountChange} onSelect={()=>setSellSelected(false)}></input>
+                              <div>{!swapState ? "ETH" : "LYT"}</div>
+                          </div>
+                      </div>
+                      <button disabled={swapStatus != "Swap"} type="button" onClick={(e)=>initiateSwap(e,swapState)} className="w-full text-center p-3 bg-teal-400 rounded-xl m-auto border-black border-2 my-5 hover:cursor-pointer disabled:cursor-default disabled:text-gray-400 disabled:bg-teal-100 disabled:border-gray-400">
+                          {swapStatus}
+                      </button>
+              </div>
+              <div className="w-1/3">
+                  <div>
+                      {ethBalance == null ? <></> : <AssetInfo user={true} ethBalance={ethBalance} tokenBalance={tokenBalance}/>}
+                  </div>
+                  <div>
+                      {poolEthBal == null ? <></> : <AssetInfo user={false} ethBalance={poolEthBal} tokenBalance={poolTokenBal}/>}
+                  </div>
+              </div>
+          </div>
+      </div>
   );
 }
+
