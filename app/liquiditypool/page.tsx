@@ -11,7 +11,7 @@ export default function LiquidityPool() {
     const [deposit,setDeposit] = useState<boolean>(true);
 
     useEffect(() => {
-        connect().then(getBlockData);
+        connect().then(()=>getBlockData);
     }, [address]);
 
     useEffect(() => {
