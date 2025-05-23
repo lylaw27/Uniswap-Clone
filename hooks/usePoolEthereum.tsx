@@ -1,8 +1,10 @@
-import {useState} from "react";
+import {ChangeEventHandler, useState} from "react";
 import {ethers, AbstractProvider,BrowserProvider, Signer} from "ethers";
 import tokenAbi from '../artifacts/contracts/LarryToken.sol/LarryToken.json';
 import poolAbi from '../artifacts/contracts/Pool.sol/Pool.json';
 import roundingFunc from "../components/RoundingFunc";
+
+declare let window: any;
 
 const usePoolEthereum = () => {
     const [address, setAddress] = useState<string>("");
@@ -25,6 +27,8 @@ const usePoolEthereum = () => {
     const tokenContract = new ethers.Contract(tokenAddress,tokenAbi.abi,signer);
     const poolContract = new ethers.Contract(poolAddress,poolAbi.abi,signer);
 
+ 
+    
     const connect = async() => {
         if (window.ethereum) {
             const provider = new ethers.WebSocketProvider("ws://127.0.0.1:8545");
@@ -104,7 +108,7 @@ const usePoolEthereum = () => {
         poolContract.depositPool({value: ethers.parseEther(sellAmount)});
     }
 
-    const priceChange = async(e) =>{
+    const priceChange = async(e:React.ChangeEvent<HTMLInputElement>) =>{
         const val = e.target.value;
         if(sellSelected){
             setSellAmount(val);
@@ -116,9 +120,12 @@ const usePoolEthereum = () => {
         }
     }
 
-    const percentChange = async(e)=>{
+    const percentChange = async(e:React.ChangeEvent<HTMLInputElement>)=>{
         const val = e.target.textContent;
         const regex = /^\d*\.?\d*$/;
+        if(val == null){
+            return;
+        }
         let number = parseFloat(val);
         if(val === ""){
             number = 0;
