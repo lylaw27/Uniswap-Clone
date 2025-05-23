@@ -4,6 +4,8 @@ import tokenAbi from '../artifacts/contracts/LarryToken.sol/LarryToken.json';
 import poolAbi from '../artifacts/contracts/Pool.sol/Pool.json';
 import roundingFunc from "../components/RoundingFunc";
 
+declare let window: any;
+
 const useSwapEthereum = () => {
     const [address, setAddress] = useState<string>("");
     const [ethBalance, setEthBalance] = useState<string>("0.00");
@@ -84,7 +86,7 @@ const useSwapEthereum = () => {
             });
 
     }
-    const initiateSwap = (e,sellEth:boolean) =>{
+    const initiateSwap = (e:React.MouseEvent<HTMLButtonElement>,sellEth:boolean) =>{
         if(sellEth){
             poolContract.depositEth({value: ethers.parseEther(sellAmount)});
         }
@@ -112,7 +114,7 @@ const useSwapEthereum = () => {
         }
     }
 
-    const amountChange = async(e) =>{
+    const amountChange = async(e:React.ChangeEvent<HTMLInputElement>) =>{
         const val = e.target.value;
         if(sellSelected){
             setSellAmount(val);
