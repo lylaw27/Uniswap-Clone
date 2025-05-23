@@ -12,7 +12,7 @@ export default function Home() {
 
 
     useEffect(() => {
-        connect().then(getBlockData);
+        connect().then(()=>getBlockData);
     }, [address]);
 
     useEffect(() => {
