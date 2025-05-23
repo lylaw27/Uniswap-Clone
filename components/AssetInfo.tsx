@@ -1,7 +1,7 @@
 import {ethers} from "ethers";
 
 
-export default function AssetInfo ({user,ethBalance,tokenBalance}:{user:boolean,ethBalance: bigint,tokenBalance: bigint}){
+export default function AssetInfo ({user,ethBalance,tokenBalance}:{user:boolean,ethBalance: string,tokenBalance: string}){
 
     return(
     <div className="flex justify-between mb-16">
