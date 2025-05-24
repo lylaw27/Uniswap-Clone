@@ -1,4 +1,4 @@
-import {ChangeEventHandler, useState} from "react";
+import {useState} from "react";
 import {ethers, AbstractProvider,BrowserProvider, Signer} from "ethers";
 import tokenAbi from '../artifacts/contracts/LarryToken.sol/LarryToken.json';
 import poolAbi from '../artifacts/contracts/Pool.sol/Pool.json';
