@@ -16,5 +16,4 @@ export default function AssetInfo ({user,ethBalance,tokenBalance}:{user:boolean,
         <div className="px-5"/>
     </div>
     )
-
 }

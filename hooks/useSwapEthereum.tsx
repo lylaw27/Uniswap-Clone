@@ -96,8 +96,8 @@ const useSwapEthereum = () => {
     }
 
     const connect = async() => {
-        if (window.ethereum) {
-            const provider = new ethers.WebSocketProvider("ws://127.0.0.1:8545");
+        if (window.ethereum && process.env.NEXT_PUBLIC_ETHTESTNET) {
+            const provider = new ethers.WebSocketProvider(process.env.NEXT_PUBLIC_ETHTESTNET);
             setProvider(provider);
             const newSigner = await provider.getSigner();
             setSigner(newSigner);
