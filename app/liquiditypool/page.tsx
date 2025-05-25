@@ -12,6 +12,7 @@ export default function LiquidityPool() {
 
     useEffect(() => {
         connect().then(()=>getBlockData);
+        refreshData();
     }, [address]);
 
     useEffect(() => {

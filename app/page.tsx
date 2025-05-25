@@ -13,6 +13,7 @@ export default function Home() {
 
     useEffect(() => {
         connect().then(()=>getBlockData);
+        refreshData();
     }, [address]);
 
     useEffect(() => {
