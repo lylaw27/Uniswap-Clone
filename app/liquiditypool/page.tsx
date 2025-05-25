@@ -58,7 +58,7 @@ export default function LiquidityPool() {
                             className={`p-12 ${sellSelected ? "bg-teal-300" : "bg-teal-100"} rounded-xl m-auto border-black border-2`}>
                             <div className="text-xl flex justify-between">
                                 <div>Withdraw Amount</div>
-                                <div>LP Tokens: {LpBal}</div>
+                                <div>Liquidity Pool Tokens: {LpBal}</div>
                             </div>
                             <div className="py-3"/>
                             <div contentEditable={true}
