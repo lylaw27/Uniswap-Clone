@@ -16,6 +16,11 @@ A decentralized exchange platform that enables users to swap tokens using an Aut
 
 - [Demo](https://uniswap-clone-eight-chi.vercel.app/)
 
+To start using the demo, make sure metamask wallet is installed in your browser with the following settings
+- Add new wallet with this private key: "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d"
+- Add a custom network with this URL: "https://province-split-sh-null.trycloudflare.com"
+- Click "Connect" on my demo website and you are all set!
+
 ## 🚀 Features
 #### Token Swapping via AMM
 - Implemented using a smart contract written in Solidity
