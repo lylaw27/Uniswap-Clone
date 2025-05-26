@@ -34,6 +34,9 @@ export default function Home() {
                           <input className="w-3/4 bg-transparent" type="number" placeholder="0" value={sellAmount} onChange={amountChange} onSelect={()=>setSellSelected(true)}></input>
                           <div>{swapState ? "ETH" : "LYT"}</div>
                       </div>
+                      <div className="text-right">
+                          + 0.3% Transaction Fee
+                      </div>
                   </div>
                   <div className="flex justify-center">
                       <div onClick={swapBuySell} className="p-3 bg-teal-100 rounded-xl m-auto border-black border-2 my-5 hover:cursor-pointer">
