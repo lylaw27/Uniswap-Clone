@@ -21,6 +21,10 @@ contract Pool is ERC20{
         ethBalance = ethBalance + msg.value;
     }
 
+    fallback() external payable{
+        ethBalance = ethBalance + msg.value;
+    }
+
     function getEthBalance() external view returns (uint256){
         return address(this).balance;
     }
@@ -39,7 +43,7 @@ contract Pool is ERC20{
         }
         uint256 k = inputBalance * outputBalance;
         if(inputSell){
-            quoteAmount = (outputBalance - k / (inputBalance + _amount))*1000/1003;
+            quoteAmount = outputBalance - k / (inputBalance + _amount*1000/1003);
         }
         else{
             quoteAmount = (k / (inputBalance - _amount) - outputBalance)*1003/1000;
@@ -52,47 +56,49 @@ contract Pool is ERC20{
         //Validate ETH sent is greater than 0
         require(msg.value>0);
 
+        uint256 amountBeforeFee = msg.value*1000/1003;
+        
         //Calculate k, where k = current eth balance * token balance
         uint256 k = ethBalance * ercToken.balanceOf(address(this));
 
         //New token balance = k / new eth balance
-        uint256 newBalance = k / (address(this).balance);
+        uint256 newBalance = k / (amountBeforeFee + ethBalance);
 
-        //Token amount sent to user = (Current token balance - New token balance) / 0.3% Tx fee
+        //Token amount sent to user = (Current token balance - New token balance)
         uint256 amount = (ercToken.balanceOf(address(this)) - newBalance);
-        uint256 amountAfterFee = amount*1000/1003;
 
         //Update eth balance
         ethBalance = address(this).balance;
 
         //Make sure user successfully gets paid, else revert transaction
-        require(ercToken.transfer(msg.sender,amountAfterFee));
+        require(ercToken.transfer(msg.sender,amount));
     }
 
     //Call this function when user buys ETH
     function withdrawEth(uint256 _tokenAmount) external{
 
-        //Validate ETH sent is greater than 0
+        //Validate Token sent is greater than 0
         require(_tokenAmount>0);
 
         //Calculate k, where k = old token balance * eth balance
-        uint256 k = address(this).balance * ercToken.balanceOf(address(this));
+        uint256 k = ercToken.balanceOf(address(this)) * address(this).balance;
+
+        uint256 amountBeforeFee = _tokenAmount*1000/1003;
+        
+        //New eth balance = k / new token balance
+        uint256 newBalance = k / (ercToken.balanceOf(address(this)) + amountBeforeFee);
 
         //Try withdraw Token from user
         require(ercToken.transferFrom(msg.sender, address(this), _tokenAmount),"Insufficient Token Balance");
 
-        //New eth balance = k / new token balance
-        uint256 newBalance = k / ercToken.balanceOf(address(this));
-
-        //ETH sent to user = (Current eth balance - New eth balance)) / 0.3% Tx fee
+        //ETH sent to user = Current eth balance - New eth balance
         uint256 amount = address(this).balance - newBalance;
-        uint256 amountAfterFee = amount*1000/1003;
 
         //Update eth balance
-        ethBalance = ethBalance - amountAfterFee;
+        ethBalance = ethBalance - amount;
 
         //Pay ETH to user at the end to prevent reentrancy
-        payable(msg.sender).transfer(amountAfterFee);
+        payable(msg.sender).transfer(amount);
     }
 
     function getPoolQuote(bool eth,uint256 _amount) external view returns (uint256){
