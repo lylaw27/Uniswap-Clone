@@ -50,56 +50,62 @@ LarryToken.sol - ERC-20 token contract
 
 ## 🧮 Algorithms
 
+<p align="center" width="100%">
+    <img width="60%" src="/public/lpdiagram.png">
+</p>
+
 ### Swap functions
 ```solidity
 //Call this function when user sells ETH
 function depositEth() external payable{
-
         //Validate ETH sent is greater than 0
         require(msg.value>0);
+
+        uint256 amountBeforeFee = msg.value*1000/1003;
         
         //Calculate k, where k = current eth balance * token balance
         uint256 k = ethBalance * ercToken.balanceOf(address(this));
-        
+
         //New token balance = k / new eth balance
-        uint256 newBalance = k / (address(this).balance);
-        
-        //Token amount sent to user = (Current token balance - New token balance) / 0.3% Tx fee
+        uint256 newBalance = k / (amountBeforeFee + ethBalance);
+
+        //Token amount sent to user = (Current token balance - New token balance)
         uint256 amount = (ercToken.balanceOf(address(this)) - newBalance);
-        uint256 amountAfterFee = amount*1000/1003;
-        
+
         //Update eth balance
         ethBalance = address(this).balance;
-        
+
         //Make sure user successfully gets paid, else revert transaction
-        require(ercToken.transfer(msg.sender,amountAfterFee));
+        require(ercToken.transfer(msg.sender,amount));
 }
 
 //Call this function when user buys ETH
 function withdrawEth(uint256 _tokenAmount) external{
 
-        //Validate ETH sent is greater than 0
+        //Validate Token sent is greater than 0
         require(_tokenAmount>0);
-        
+
         //Calculate k, where k = old token balance * eth balance
-        uint256 k = address(this).balance * ercToken.balanceOf(address(this));
-        
-        //Try withdraw Token from user
-        require(ercToken.transferFrom(msg.sender, address(this), _tokenAmount),"Insufficient Token Balance");
+        uint256 k = ercToken.balanceOf(address(this)) * address(this).balance;
+
+        uint256 amountBeforeFee = _tokenAmount*1000/1003;
         
         //New eth balance = k / new token balance
-        uint256 newBalance = k / ercToken.balanceOf(address(this));
-        
-        //ETH sent to user = (Current eth balance - New eth balance)) / 0.3% Tx fee
+        uint256 newBalance = k / (ercToken.balanceOf(address(this)) + amountBeforeFee);
+
+        //Try withdraw Token from user
+        require(ercToken.transferFrom(msg.sender, address(this), _tokenAmount),"Insufficient Token Balance");
+
+        //ETH sent to user = Current eth balance - New eth balance
         uint256 amount = address(this).balance - newBalance;
-        uint256 amountAfterFee = amount*1000/1003;
-        
+
         //Update eth balance
-        ethBalance = ethBalance - amountAfterFee;
-        
+        ethBalance = ethBalance - amount;
+
         //Pay ETH to user at the end to prevent reentrancy
-        payable(msg.sender).transfer(amountAfterFee);
+        payable(msg.sender).transfer(amount);
 }
+
 ```
 
 ### Liquidity pool functions
