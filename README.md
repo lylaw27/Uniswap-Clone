@@ -22,6 +22,9 @@ To start using the demo, make sure metamask wallet is installed in your browser 
 - Click "Connect" on my demo website and you are all set!
 
 ## 🚀 Features
+<p align="center" width="100%">
+    <img width="100%" src="/public/lpdiagram.png">
+</p>
 #### Token Swapping via AMM
 - Implemented using a smart contract written in Solidity
 
@@ -33,14 +36,16 @@ To start using the demo, make sure metamask wallet is installed in your browser 
 
 - Price impact displayed for each swap
 
+- Each trade pays a small fee (e.g., 0.3%), which is added to the pool.
+
 #### Liquidity Pool Participation
 - Users can deposit funds into liquidity pools
 
 - Withdraw liquidity at any time
 
-- Earn trading fees proportional to your share of the pool
-
 - Receives LP (Liquidity Provider) tokens representing pool share
+
+- Liquidity Providers earn a share of the transaction fees, proportional to their share of the pool.
 
 ## 📜 Core Contracts
 
@@ -49,10 +54,6 @@ Pool.sol - Main exchange contract handling swaps and liquidity
 LarryToken.sol - ERC-20 token contract
 
 ## 🧮 Algorithms
-
-<p align="center" width="100%">
-    <img width="60%" src="/public/lpdiagram.png">
-</p>
 
 ### Swap functions
 ```solidity
