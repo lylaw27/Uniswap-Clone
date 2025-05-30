@@ -25,6 +25,7 @@ To start using the demo, make sure metamask wallet is installed in your browser 
 <p align="center" width="100%">
     <img width="100%" src="/public/lpdiagram.png">
 </p>
+
 #### Token Swapping via AMM
 - Implemented using a smart contract written in Solidity
 
